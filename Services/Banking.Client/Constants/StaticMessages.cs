@@ -11,6 +11,9 @@
         public const string UserCreated = "User has been created successfully.";
         public const string TokenCreated = "Token has been generated successfully.";
 
+        // Client message
+        public const string ClientAdded = "Client has been added successfully.";
+
         // Error messages
         public const string InvalidInput = "The input provided is invalid.";
         public const string UnauthorizedAccess = "You do not have permission to access this resource.";
