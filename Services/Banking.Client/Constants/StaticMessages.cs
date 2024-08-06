@@ -24,6 +24,7 @@
         public const string IncorrectPassword = "The entered password is incorrect.";
         public const string UserNotExist = "User with this email does not exist.";
         public const string UserAlreadyExist = "User with this email already exist.";
+        public const string ClientInsertionFailed = "Failed to add new client. Please try again.";
 
         // Validation messages
         public const string EmailRequired = "Email address is required.";
