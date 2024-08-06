@@ -1,3 +1,4 @@
+using Banking.Auth.HelperClasses;
 using Banking.Auth.Logger;
 using Banking.Auth.Managers;
 using Banking.Auth.Repositories;
@@ -22,13 +23,14 @@ builder.Host.UseSerilog((context, configuration) =>
 configuration.ReadFrom.Configuration(context.Configuration));
 
 // Registering Managers and Repositories with dependency injection (DI) as a transient service
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddTransient<IAuthManager, AuthManager>();
 builder.Services.AddTransient<IAuthRepository, AuthRepository>();
 builder.Services.AddTransient<IAuthLogger, AuthLogger>();
 
 
 var app = builder.Build();
-
+app.UseExceptionHandler(_ => { });
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
