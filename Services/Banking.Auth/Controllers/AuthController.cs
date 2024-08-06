@@ -13,36 +13,43 @@ namespace Banking.Auth.Controllers
     public class AuthController(IAuthManager authManager, IAuthLogger authLogger, IHttpContextAccessor httpContextAccessor) : Controller
     {
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginRequest login)
+        public async Task<IActionResult> Login([FromBody] LoginRequest login)
         {
             try
             {
+                // Validate the model
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                // Log the request details
                 var httpContext = httpContextAccessor.HttpContext;
                 if (httpContext != null)
                 {
-                    // Log the body of HTTP request
                     authLogger.LogRequest(login, httpContext);
                 }
+
+                // Attempt to log in
                 var result = await authManager.LoginAsync(login);
 
-                // Log the failed login attempt and return an Unauthorized response
+                // Handle failed login attempt
                 if (!result.success)
                 {
                     authLogger.LogResponse(result);
                     return Unauthorized(result);
                 }
 
-                // Log the respones and return result
+                // Log successful response and return result
                 authLogger.LogResponse(result);
                 return Ok(result);
             }
-
             catch (Exception ex)
             {
-                // Log the exception
+                // Log the exception details
                 Log.Error(StaticMessages.ExceptionOccured, nameof(Login), ex.Message);
-                
-                // The exception will automatically be handled by "GlobalExceptionHandler" middleware
+
+                // The exception will be handled by the global exception handler middleware
                 throw;
             }
         }
@@ -52,12 +59,20 @@ namespace Banking.Auth.Controllers
         {
             try
             {
+                // Validate the model
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                // Log the request details
                 var httpContext = httpContextAccessor.HttpContext;
                 if (httpContext != null)
                 {
-                    // Log the body of HTTP request
                     authLogger.LogRequest(user, httpContext);
                 }
+
+                // Attempt to sign up
                 var result = await authManager.SignUpAsync(user);
 
                 // Log the respones and return result
@@ -66,10 +81,10 @@ namespace Banking.Auth.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception
+                // Log the exception details
                 Log.Error(StaticMessages.ExceptionOccured, nameof(SignUp), ex.Message);
 
-                // The exception will automatically be handled by "GlobalExceptionHandler" middleware
+                // The exception will be handled by the global exception middleware
                 throw;
             }
         }
