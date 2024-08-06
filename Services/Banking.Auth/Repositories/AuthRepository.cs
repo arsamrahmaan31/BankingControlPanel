@@ -5,6 +5,7 @@ using Banking.Auth.Models;
 using Dapper;
 using Serilog;
 using Banking.Auth.Constants;
+using System.Net;
 
 namespace Banking.Auth.Repositories
 {
@@ -61,7 +62,7 @@ namespace Banking.Auth.Repositories
                 // Return success response
                 return new ResponseResult<SignUpResponse>
                 {
-                    success = true, result = userRes, message = StaticMessages.UserCreated
+                    success = true, status_code=(int)HttpStatusCode.OK, result = userRes, message = StaticMessages.UserCreated
                 };
             }
             catch (SqlException sqlEx)
@@ -70,7 +71,9 @@ namespace Banking.Auth.Repositories
                 Log.Error(StaticMessages.ExceptionOccured, nameof(SignUpAsync), sqlEx.Message);
                 return new ResponseResult<SignUpResponse>
                 {
-                    success = false, result = null, message = StaticMessages.DatabaseErrorOccured
+                    success = false,
+                    status_code = (int)HttpStatusCode.InternalServerError,
+                     result = null, message = StaticMessages.DatabaseErrorOccured
                 };
             }
             catch (Exception ex)
@@ -79,7 +82,9 @@ namespace Banking.Auth.Repositories
                 Log.Error(StaticMessages.ExceptionOccured, nameof(SignUpAsync), ex.Message);
                 return new ResponseResult<SignUpResponse>
                 {
-                    success = false, result = null, message = ex.Message
+                    success = false,
+                    status_code = (int)HttpStatusCode.InternalServerError,
+                    result = null, message = ex.Message
                 };
             }
         }

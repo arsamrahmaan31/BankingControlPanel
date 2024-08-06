@@ -4,12 +4,13 @@ using Banking.Auth.Repositories;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 
 namespace Banking.Auth.Managers
 {
-    public class AuthManager(IAuthRepository authRepository, IConfiguration configuration): IAuthManager
+    public class AuthManager(IAuthRepository authRepository, IConfiguration configuration) : IAuthManager
     {
         public async Task<ResponseResult<LoginResponse>> LoginAsync(LoginRequest login)
         {
@@ -32,28 +33,38 @@ namespace Banking.Auth.Managers
                             email = credentialsFound.email,
                             role_name = credentialsFound.role_name,
                         };
-                        return new ResponseResult<LoginResponse> 
-                        { 
-                            success = true, result = loggedInUser, message = StaticMessages.TokenCreated, token = token 
+                        return new ResponseResult<LoginResponse>
+                        {
+                            success = true,
+                            status_code = (int)HttpStatusCode.OK,
+                            result = loggedInUser,
+                            message = StaticMessages.TokenCreated,
+                            token = token
                         };
                     }
                     else
                     {
-                        return new ResponseResult<LoginResponse> 
+                        return new ResponseResult<LoginResponse>
                         {
-                            success = false, result = new LoginResponse(), message = StaticMessages.IncorrectPassword 
+                            success = false,
+                            status_code = (int)HttpStatusCode.Unauthorized,
+                            result = new LoginResponse(),
+                            message = StaticMessages.IncorrectPassword
                         };
                     }
                 }
-                else return new ResponseResult<LoginResponse> 
-                { 
-                    success = false, result = new LoginResponse(), message = StaticMessages.UserNotExist
+                else return new ResponseResult<LoginResponse>
+                {
+                    success = false,
+                    status_code = (int)HttpStatusCode.NotFound,
+                    result = new LoginResponse(),
+                    message = StaticMessages.UserNotExist
                 };
             }
             catch (Exception ex)
             {
                 Log.Error(StaticMessages.ExceptionOccured, nameof(LoginAsync), ex.Message);
-                return new ResponseResult<LoginResponse> { success = false, result = new LoginResponse(), message = ex.Message };
+                return new ResponseResult<LoginResponse> { success = false, status_code = (int)HttpStatusCode.InternalServerError, result = new LoginResponse(), message = ex.Message };
             }
         }
 
@@ -67,7 +78,10 @@ namespace Banking.Auth.Managers
                 {
                     return new ResponseResult<SignUpResponse>
                     {
-                        success = false,result = null, message = StaticMessages.UserAlreadyExist
+                        success = false,
+                        status_code = (int)HttpStatusCode.Conflict,
+                        result = null,
+                        message = StaticMessages.UserAlreadyExist
                     };
                 }
 
@@ -82,14 +96,20 @@ namespace Banking.Auth.Managers
                 {
                     return new ResponseResult<SignUpResponse>
                     {
-                        success = true, result = createUserResult.result, message = StaticMessages.UserCreated
+                        success = true,
+                        status_code= (int)HttpStatusCode.OK,
+                        result = createUserResult.result,
+                        message = StaticMessages.UserCreated
                     };
                 }
                 else
                 {
                     return new ResponseResult<SignUpResponse>
                     {
-                        success = false, result = null, message = StaticMessages.SomethingWentWrong
+                        success = false,
+                        result = null,
+                        status_code=(int)HttpStatusCode.InternalServerError,
+                        message = StaticMessages.SomethingWentWrong
                     };
                 }
             }
@@ -98,7 +118,10 @@ namespace Banking.Auth.Managers
                 Log.Error(StaticMessages.ExceptionOccured, nameof(SignUpAsync), ex.Message);
                 return new ResponseResult<SignUpResponse>
                 {
-                    success = false, result = null, message = ex.Message
+                    success = false,
+                    status_code = (int)HttpStatusCode.InternalServerError,
+                    result = null,
+                    message = ex.Message
                 };
             }
         }
