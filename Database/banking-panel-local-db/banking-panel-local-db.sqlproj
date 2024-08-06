@@ -70,5 +70,7 @@
     <Build Include="dbo\Tables\bp_client_accounts.sql" />
     <Build Include="dbo\Stored Procedures\sp_createNewUser.sql" />
     <Build Include="dbo\Stored Procedures\sp_checkIfEmailExists.sql" />
+    <Build Include="dbo\Stored Procedures\sp_addNewClient.sql" />
+    <Build Include="dbo\Stored Procedures\sp_addClientAccounts.sql" />
   </ItemGroup>
 </Project>
