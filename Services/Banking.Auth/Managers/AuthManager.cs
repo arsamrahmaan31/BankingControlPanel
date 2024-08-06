@@ -21,7 +21,10 @@ namespace Banking.Auth.Managers
                     if (BCrypt.Net.BCrypt.Verify(login.password, credentialsFound.password))
                     {
                         string token = string.Empty;
-                        
+                        if (credentialsFound.role_id != null && credentialsFound.email != null)
+                        {
+                            token = CreateToken(credentialsFound.role_name);
+                        }
                         var loggedInUser = new LoginResponse
                         {
                             first_name = credentialsFound.first_name,
@@ -46,6 +49,30 @@ namespace Banking.Auth.Managers
         }
 
 
+
+
+        private string CreateToken(string? role_name)
+        {
+
+            var claims = new List<Claim>();
+            if (role_name != null)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role_name));
+            }
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                configuration.GetSection(StaticMessages.JwtTokenPath).Value!));
+
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: credentials
+                );
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
+        }
 
     }
 }

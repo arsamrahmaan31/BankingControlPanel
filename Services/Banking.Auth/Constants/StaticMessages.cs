@@ -9,6 +9,7 @@
 
         // User messages
         public const string UserCreated = "User has been created successfully.";
+        public const string TokenCreated = "Token has been generated successfully.";
 
         // Error messages
         public const string InvalidInput = "The input provided is invalid.";
@@ -17,6 +18,9 @@
         public const string UnexpectedError = "An unexpected error occurred. Please contact support.";
         public const string InternalServerError = "Internal Server Error.";
         public const string SomethingWentWrong = "Something went wrong.";
+        public const string IncorrectPassword = "The entered password is incorrect.";
+        public const string UserNotExist = "User with this email does not exist.";
+        public const string UserAlreadyExist = "User with this email already exist.";
 
         // Validation messages
         public const string EmailRequired = "Email address is required.";
@@ -26,6 +30,9 @@
         // Exception message
         public const string ExceptionOccured = "An exception has occured. Details:: Method name: {MethodName}, Error message: {ErrorMessage}";
         public const string GlobalExceptionOccured = "Hello! An Unhandled exception occurred: {title}, statuscode: {statuscode}, type: {type}, detail: {detail}, instance: {instance}";
+
+        // JWT token path
+        public const string JwtTokenPath = "AppSettings:Token";
     }
 
 }
