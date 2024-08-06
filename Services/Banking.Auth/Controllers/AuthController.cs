@@ -42,11 +42,36 @@ namespace Banking.Auth.Controllers
                 // Log the exception
                 Log.Error(StaticMessages.ExceptionOccured, nameof(Login), ex.Message);
                 
-                // The exception will be handled by our "GlobalExceptionHandler" Class
+                // The exception will automatically be handled by "GlobalExceptionHandler" middleware
                 throw;
             }
         }
 
-        
+        [HttpPost("SignUp")]
+        public async Task<IActionResult> SignUp(SignUpRequest user)
+        {
+            try
+            {
+                var httpContext = httpContextAccessor.HttpContext;
+                if (httpContext != null)
+                {
+                    // Log the body of HTTP request
+                    authLogger.LogRequest(user, httpContext);
+                }
+                var result = await authManager.SignUpAsync(user);
+
+                // Log the respones and return result
+                authLogger.LogResponse(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Log.Error(StaticMessages.ExceptionOccured, nameof(SignUp), ex.Message);
+
+                // The exception will automatically be handled by "GlobalExceptionHandler" middleware
+                throw;
+            }
+        }
     }
 }
