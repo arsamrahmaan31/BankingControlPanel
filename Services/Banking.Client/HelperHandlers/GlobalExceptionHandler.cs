@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using Banking.Client.Constants;
+using Microsoft.AspNetCore.Diagnostics;
 using Serilog;
 using System.Net;
 
