@@ -1,5 +1,6 @@
 ﻿using Banking.Client.ClientLogger;
 using Banking.Client.Constants;
+using Banking.Client.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -16,6 +17,11 @@ namespace Banking.Client.Controllers
         {
             try
             {
+                // Validate the model
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
                 // Log the request details
                 var httpContext = httpContextAccessor.HttpContext;
