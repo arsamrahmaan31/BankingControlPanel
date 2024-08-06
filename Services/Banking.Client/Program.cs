@@ -7,8 +7,10 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddAuthorization();
 //builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddSwaggerGen(options =>
 {
