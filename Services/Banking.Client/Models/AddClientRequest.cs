@@ -1,5 +1,9 @@
-﻿namespace Banking.Client.Models
+﻿using Banking.Client.HelperHandlers;
+using System.Net;
+
+namespace Banking.Client.Models
 {
+    [CompositeValidation]
     public class AddClientRequest
     {
         public int gender_id { get; set; }
@@ -9,15 +13,8 @@
         public string personal_id { get; set; }
         public string profile_photo { get; set; }
         public string mobile_number { get; set; }
-        public string country { get; set; }
-        public string city { get; set; }
-        public string street { get; set; }
-        public string zip_code { get; set; }
-        public List<Accounts> client_accounts { get; set; }
-    }
-
-    public class Accounts
-    {
-        public string account_number { get; set; }
+        
+        public List<ClientAccount> client_accounts { get; set; }
+        public ClientAddress address { get; set; }
     }
 }
