@@ -8,7 +8,7 @@ namespace Banking.Auth.HelperHandlers
         {
             var validationResults = new List<ValidationResult>();
 
-            // Apply role_id validation rule
+            // Validate role_id
             if (validationContext.ObjectType.GetProperty("role_id") != null)
             {
                 var roleId = (int?)validationContext.ObjectType.GetProperty("role_id").GetValue(validationContext.ObjectInstance);
