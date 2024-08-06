@@ -31,8 +31,9 @@
         public const string ExceptionOccured = "An exception has occured. Details:: Method name: {MethodName}, Error message: {ErrorMessage}";
         public const string GlobalExceptionOccured = "Hello! An Unhandled exception occurred: {title}, statuscode: {statuscode}, type: {type}, detail: {detail}, instance: {instance}";
 
-        // JWT token path
-        public const string JwtTokenPath = "AppSettings:Token";
+        // Database Error
+        public const string DatabaseErrorOccured = "A database error occurred. Please try again later.";
+        public const string DatabaseNotConfigured = "Database connection string is not configured.";
     }
 
 }
