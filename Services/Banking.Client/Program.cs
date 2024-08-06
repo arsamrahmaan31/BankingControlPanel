@@ -1,6 +1,7 @@
 using Banking.Client.ClientLogger;
 using Banking.Client.HelperHandlers;
 using Banking.Client.Managers;
+using Banking.Client.Repositories;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -17,6 +18,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddTransient<IClientLogger, ClientLogger>();
 builder.Services.AddTransient<IClientManager, ClientManager>();
+builder.Services.AddTransient<IClientRepository, ClientRepository>();
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
