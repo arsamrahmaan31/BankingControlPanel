@@ -4,7 +4,7 @@ using Serilog;
 
 namespace Banking.Auth.Logger
 {
-    public class Logger : ILogger
+    public class AuthLogger : IAuthLogger
     {
         /// <summary>
         /// Logs details about an incoming request, including IP address, request method, path, user agent, and the request object.

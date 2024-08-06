@@ -2,7 +2,7 @@
 
 namespace Banking.Auth.Logger
 {
-    public interface ILogger
+    public interface IAuthLogger
     {
         void LogRequest(object dto, HttpContext httpContext);
         void LogResponse<T>(ResponseResult<T> response);
