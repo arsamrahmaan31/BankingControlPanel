@@ -1,5 +1,6 @@
 ﻿using Banking.Client.ClientLogger;
 using Banking.Client.Constants;
+using Banking.Client.Managers;
 using Banking.Client.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,13 +8,13 @@ using Serilog;
 
 namespace Banking.Client.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class ClientController(IClientManager clientManager, IClientLogger clientLogger, IHttpContextAccessor httpContextAccessor) : Controller
     {
         [HttpPost("AddClient")]
-        public async Task<IActionResult> SignUp(AddClientRequest client)
+        public async Task<IActionResult> AddClient(AddClientRequest client)
         {
             try
             {
@@ -31,7 +32,7 @@ namespace Banking.Client.Controllers
                 }
 
                 // Attempt to add client
-                var result = await clientManager.SignUpAsync(client);
+                var result = await clientManager.AddClientAsync(client);
 
                 // Log the respones and return result
                 clientLogger.LogResponse(result);
@@ -40,7 +41,7 @@ namespace Banking.Client.Controllers
             catch (Exception ex)
             {
                 // Log the exception details
-                Log.Error(StaticMessages.ExceptionOccured, nameof(SignUp), ex.Message);
+                Log.Error(StaticMessages.ExceptionOccured, nameof(AddClient), ex.Message);
 
                 // The exception will be handled by the global exception middleware
                 throw;
