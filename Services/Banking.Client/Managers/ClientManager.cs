@@ -1,5 +1,6 @@
 ﻿using Banking.Client.Constants;
 using Banking.Client.Models;
+using Banking.Client.Repositories;
 using Serilog;
 
 namespace Banking.Client.Managers
@@ -11,7 +12,7 @@ namespace Banking.Client.Managers
             try
             {
                 // Add client in the database
-                ResponseResult<AddClientResponse> createUserResult = await clientRepository.SignUpAsync(client);
+                ResponseResult<AddClientResponse> createUserResult = await clientRepository.CreateClientAsync(client);
 
                 if (createUserResult.success)
                 {
