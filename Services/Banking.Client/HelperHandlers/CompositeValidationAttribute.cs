@@ -1,4 +1,5 @@
-﻿using PhoneNumbers;
+﻿using Banking.Client.Models;
+using PhoneNumbers;
 using System.ComponentModel.DataAnnotations;
 
 namespace Banking.Client.HelperHandlers
@@ -94,12 +95,25 @@ namespace Banking.Client.HelperHandlers
             }
 
             // Validate client_accounts
-            if (validationContext.ObjectType.GetProperty("client_accounts") != null)
+            var clientAccountsProperty = validationContext.ObjectType.GetProperty("client_accounts");
+            if (clientAccountsProperty != null)
             {
-                var accounts = (List<string>)validationContext.ObjectType.GetProperty("client_accounts").GetValue(validationContext.ObjectInstance);
-                if (accounts == null || !accounts.Any())
+                var accounts = clientAccountsProperty.GetValue(validationContext.ObjectInstance) as List<ClientAccount>;
+                if (accounts == null || !accounts.Any() )
                 {
-                    validationResults.Add(new ValidationResult("At least one client_accounts is required."));
+                    validationResults.Add(new ValidationResult("At least one client_account is required."));
+                }
+                else
+                {
+                    // Check each account's account_number for non-empty value
+                    foreach (var account in accounts)
+                    {
+                        if (string.IsNullOrWhiteSpace(account.account_number))
+                        {
+                            validationResults.Add(new ValidationResult("Each client_account must have a non-empty account_number."));
+                            break; // Stop checking after finding the first invalid account
+                        }
+                    }
                 }
             }
 
