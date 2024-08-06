@@ -48,7 +48,33 @@ namespace Banking.Auth.Managers
             }
         }
 
-
+        public async Task<ResponseResult<SignUpResponse>> SignUpAsync(SignUpRequest user)
+        {
+            try
+            {
+                var credentialsFound = await authRepository.IsLoginExistsAsync(user.email);
+                if (credentialsFound != null)
+                {
+                    return new ResponseResult<SignUpResponse> { success = false, result = new SignUpResponse(), message = StaticMessages.UserAlreadyExist };
+                }
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(user.password);
+                user.password = passwordHash;
+                ResponseResult<SignUpResponse> createUserResult = await authRepository.SignUpAsync(user);
+                if (createUserResult.success)
+                {
+                    return new ResponseResult<SignUpResponse> { success = true, result = createUserResult.result, message = StaticMessages.UserCreated };
+                }
+                else
+                {
+                    return new ResponseResult<SignUpResponse> { success = false, result = new SignUpResponse(), message = StaticMessages.SomethingWentWrong };
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(StaticMessages.ExceptionOccured, nameof(SignUpAsync), ex.Message);
+                return new ResponseResult<SignUpResponse> { success = false, result = new SignUpResponse(), message = ex.Message };
+            }
+        }
 
 
         private string CreateToken(string? role_name)
