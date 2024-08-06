@@ -43,7 +43,46 @@ namespace Banking.Auth.Repositories
             }
         }
 
-        
+        public async Task<ResponseResult<SignUpResponse>> SignUpAsync(SignUpRequest user)
+        {
+            try
+            {
+                using var connection = CreateConnection();
+                await connection.OpenAsync();
+
+                // Parameters for the stored procedure
+                var parameters = new { user.role_id, user.first_name, user.last_name, user.email, user.password };
+
+                // Execute the stored procedure
+                var userRes = await connection.QueryFirstOrDefaultAsync<SignUpResponse>(
+                    SystemConstants.StoredProcedure_UserSignUp, parameters, commandType: CommandType.StoredProcedure
+                );
+
+                // Return success response
+                return new ResponseResult<SignUpResponse>
+                {
+                    success = true, result = userRes, message = StaticMessages.UserCreated
+                };
+            }
+            catch (SqlException sqlEx)
+            {
+                // Handle SQL-specific exceptions
+                Log.Error(StaticMessages.ExceptionOccured, nameof(SignUpAsync), sqlEx.Message);
+                return new ResponseResult<SignUpResponse>
+                {
+                    success = false, result = null, message = StaticMessages.DatabaseErrorOccured
+                };
+            }
+            catch (Exception ex)
+            {
+                // Handle other exceptions
+                Log.Error(StaticMessages.ExceptionOccured, nameof(SignUpAsync), ex.Message);
+                return new ResponseResult<SignUpResponse>
+                {
+                    success = false, result = null, message = ex.Message
+                };
+            }
+        }
 
 
         #region Private methods
