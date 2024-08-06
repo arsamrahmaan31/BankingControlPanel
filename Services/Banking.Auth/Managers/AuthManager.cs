@@ -32,14 +32,23 @@ namespace Banking.Auth.Managers
                             email = credentialsFound.email,
                             role_name = credentialsFound.role_name,
                         };
-                        return new ResponseResult<LoginResponse> { success = true, result = loggedInUser, message = StaticMessages.TokenCreated, token = token };
+                        return new ResponseResult<LoginResponse> 
+                        { 
+                            success = true, result = loggedInUser, message = StaticMessages.TokenCreated, token = token 
+                        };
                     }
                     else
                     {
-                        return new ResponseResult<LoginResponse> { success = false, result = new LoginResponse(), message = StaticMessages.IncorrectPassword };
+                        return new ResponseResult<LoginResponse> 
+                        {
+                            success = false, result = new LoginResponse(), message = StaticMessages.IncorrectPassword 
+                        };
                     }
                 }
-                else return new ResponseResult<LoginResponse> { success = false, result = new LoginResponse(), message = StaticMessages.UserNotExist };
+                else return new ResponseResult<LoginResponse> 
+                { 
+                    success = false, result = new LoginResponse(), message = StaticMessages.UserNotExist
+                };
             }
             catch (Exception ex)
             {
@@ -52,27 +61,45 @@ namespace Banking.Auth.Managers
         {
             try
             {
+                // Check if user email already exists
                 var credentialsFound = await authRepository.IsLoginExistsAsync(user.email);
                 if (credentialsFound != null)
                 {
-                    return new ResponseResult<SignUpResponse> { success = false, result = new SignUpResponse(), message = StaticMessages.UserAlreadyExist };
+                    return new ResponseResult<SignUpResponse>
+                    {
+                        success = false,result = null, message = StaticMessages.UserAlreadyExist
+                    };
                 }
+
+                // Hash the password and set it
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(user.password);
                 user.password = passwordHash;
+
+                // Create user in the database
                 ResponseResult<SignUpResponse> createUserResult = await authRepository.SignUpAsync(user);
+
                 if (createUserResult.success)
                 {
-                    return new ResponseResult<SignUpResponse> { success = true, result = createUserResult.result, message = StaticMessages.UserCreated };
+                    return new ResponseResult<SignUpResponse>
+                    {
+                        success = true, result = createUserResult.result, message = StaticMessages.UserCreated
+                    };
                 }
                 else
                 {
-                    return new ResponseResult<SignUpResponse> { success = false, result = new SignUpResponse(), message = StaticMessages.SomethingWentWrong };
+                    return new ResponseResult<SignUpResponse>
+                    {
+                        success = false, result = null, message = StaticMessages.SomethingWentWrong
+                    };
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(StaticMessages.ExceptionOccured, nameof(SignUpAsync), ex.Message);
-                return new ResponseResult<SignUpResponse> { success = false, result = new SignUpResponse(), message = ex.Message };
+                return new ResponseResult<SignUpResponse>
+                {
+                    success = false, result = null, message = ex.Message
+                };
             }
         }
 
@@ -86,14 +113,12 @@ namespace Banking.Auth.Managers
                 claims.Add(new Claim(ClaimTypes.Role, role_name));
             }
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                configuration.GetSection(StaticMessages.JwtTokenPath).Value!));
+                configuration.GetSection(SystemConstants.JwtTokenPath).Value!));
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: credentials
+                claims: claims, expires: DateTime.Now.AddDays(1), signingCredentials: credentials
                 );
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
