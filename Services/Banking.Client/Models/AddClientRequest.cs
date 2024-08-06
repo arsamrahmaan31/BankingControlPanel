@@ -13,5 +13,11 @@
         public string city { get; set; }
         public string street { get; set; }
         public string zip_code { get; set; }
+        public List<Accounts> client_accounts { get; set; }
+    }
+
+    public class Accounts
+    {
+        public string account_number { get; set; }
     }
 }
