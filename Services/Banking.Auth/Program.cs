@@ -1,45 +1,41 @@
-using Banking.Auth.HelperClasses;
-using Banking.Auth.Logger;
 using Banking.Auth.Managers;
 using Banking.Auth.Repositories;
 using Serilog;
+using Banking.Auth.Logger;
+using Banking.Auth.HelperClasses;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddHttpContextAccessor();
-
-// Determine the configuration file based on the environment
+// Load configuration
 string routefile = string.Format("appsettings.{0}.json", builder.Environment.EnvironmentName);
-
-// Set configuration sources: JSON file and environment variables
 builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
-    .AddJsonFile(routefile, optional: false, reloadOnChange: true).AddEnvironmentVariables();
+    .AddJsonFile(routefile, optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables();
 
-// Configure Serilog using settings from the configuration file
+// Configure Serilog
 builder.Host.UseSerilog((context, configuration) =>
-configuration.ReadFrom.Configuration(context.Configuration));
+    configuration.ReadFrom.Configuration(context.Configuration));
 
-// Registering Managers and Repositories with dependency injection (DI) as a transient service
+// Add services to the container
+builder.Services.AddControllers();
+builder.Services.AddSwaggerGen();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddEndpointsApiExplorer();
+
+// Dependency Injection
 builder.Services.AddTransient<IAuthManager, AuthManager>();
-builder.Services.AddTransient<IAuthRepository, AuthRepository>();
 builder.Services.AddTransient<IAuthLogger, AuthLogger>();
+builder.Services.AddTransient<IAuthRepository, AuthRepository>();
 
 
 var app = builder.Build();
-app.UseExceptionHandler(_ => { });
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseExceptionHandler(_ => { });
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-app.Run();
 
+app.Run();
