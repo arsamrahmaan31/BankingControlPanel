@@ -72,5 +72,9 @@
     <Build Include="dbo\Stored Procedures\sp_checkIfEmailExists.sql" />
     <Build Include="dbo\Stored Procedures\sp_addNewClient.sql" />
     <Build Include="dbo\Stored Procedures\sp_addClientAccounts.sql" />
+    <Build Include="dbo\Tables\bp_log_search_params.sql" />
+    <Build Include="dbo\Stored Procedures\sp_logSearchFilter.sql" />
+    <Build Include="dbo\Stored Procedures\sp_getLast3SearchSuggestions.sql" />
+    <Build Include="dbo\Stored Procedures\sp_getAllClients.sql" />
   </ItemGroup>
 </Project>
