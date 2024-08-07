@@ -8,13 +8,13 @@ using Serilog;
 
 namespace Banking.Client.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class ClientController(IClientManager clientManager, IClientLogger clientLogger, IHttpContextAccessor httpContextAccessor) : Controller
     {
-        [HttpPost("AddClient")]
-        public async Task<IActionResult> AddClient(AddClientRequest client)
+        [HttpPost("AddNewClient")]
+        public async Task<IActionResult> AddClient([FromForm] AddClientRequest client)
         {
             try
             {
@@ -47,5 +47,62 @@ namespace Banking.Client.Controllers
                 throw;
             }
         }
+
+        [HttpGet("GetAllClientsRecord")]
+        public async Task<IActionResult> GetAllClients(int loggedIn_user_id, [FromQuery]QueryParameters queryParameters)
+        {
+            try
+            {
+                // Valid Id check
+                if (loggedIn_user_id == 0)
+                {
+                    return BadRequest(StaticMessages.InValidUserId);
+                }
+
+                // Attempt to add client
+                var result = await clientManager.GetClientsAsync(loggedIn_user_id, queryParameters);
+
+                // Log the respones and return result
+                clientLogger.LogResponse(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                Log.Error(StaticMessages.ExceptionOccured, nameof(GetAllClients), ex.Message);
+
+                // The exception will be handled by the global exception middleware
+                throw;
+            }
+        }
+
+        [HttpGet("GetLastThreeSuggestions")]
+        public async Task<IActionResult> GetLastestSearchSuggestions(int loggedIn_user_id)
+        {
+            try
+            {
+                // Valid Id check
+                if (loggedIn_user_id == 0)
+                {
+                    return BadRequest(StaticMessages.InValidUserId);
+                }
+                // Attempt to get suggesstions
+                var result = await clientManager.GetLatestSearchAsync(loggedIn_user_id);
+
+                // Log the respones and return result
+                clientLogger.LogResponse(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                Log.Error(StaticMessages.ExceptionOccured, nameof(GetLastestSearchSuggestions), ex.Message);
+
+                // The exception will be handled by the global exception middleware
+                throw;
+            }
+        }
+
+
     }
 }
