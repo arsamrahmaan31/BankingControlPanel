@@ -127,7 +127,7 @@ namespace Banking.Auth.Managers
         }
 
 
-        public string CreateToken(string? role_name)
+        private string CreateToken(string? role_name)
         {
 
             var claims = new List<Claim>();
@@ -136,14 +136,12 @@ namespace Banking.Auth.Managers
                 claims.Add(new Claim(ClaimTypes.Role, role_name));
             }
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                configuration.GetSection("AppSettings:Token").Value!));
+                configuration.GetSection(SystemConstants.JwtTokenPath).Value!));
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: credentials
+                claims: claims, expires: DateTime.Now.AddDays(1), signingCredentials: credentials
                 );
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);

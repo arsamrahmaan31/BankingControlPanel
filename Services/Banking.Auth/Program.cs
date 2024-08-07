@@ -1,45 +1,45 @@
+using Banking.Auth.HelperClasses;
+using Banking.Auth.Logger;
 using Banking.Auth.Managers;
 using Banking.Auth.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Serilog;
-using System.Text;
-using Banking.Auth.Logger;
-using Banking.Auth.HelperClasses;
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Load configuration
-string routefile = string.Format("appsettings.{0}.json", builder.Environment.EnvironmentName);
-builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
-    .AddJsonFile(routefile, optional: false, reloadOnChange: true)
-    .AddEnvironmentVariables();
-
-// Configure Serilog
-builder.Host.UseSerilog((context, configuration) =>
-    configuration.ReadFrom.Configuration(context.Configuration));
-
-// Add services to the container
+// Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 
-// Dependency Injection
+// Determine the configuration file based on the environment
+string routefile = string.Format("appsettings.{0}.json", builder.Environment.EnvironmentName);
+
+// Set configuration sources: JSON file and environment variables
+builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
+    .AddJsonFile(routefile, optional: false, reloadOnChange: true).AddEnvironmentVariables();
+
+// Configure Serilog using settings from the configuration file
+builder.Host.UseSerilog((context, configuration) =>
+configuration.ReadFrom.Configuration(context.Configuration));
+
+// Registering Managers and Repositories with dependency injection (DI) as a transient service
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddTransient<IAuthManager, AuthManager>();
-builder.Services.AddTransient<IAuthLogger, AuthLogger>();
 builder.Services.AddTransient<IAuthRepository, AuthRepository>();
+builder.Services.AddTransient<IAuthLogger, AuthLogger>();
 
 
 var app = builder.Build();
-
-app.UseSwagger();
-app.UseSwaggerUI();
 app.UseExceptionHandler(_ => { });
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-
 app.Run();
+

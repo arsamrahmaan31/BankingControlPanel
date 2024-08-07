@@ -10,16 +10,9 @@
         // User messages
         public const string UserCreated = "User has been created successfully.";
         public const string TokenCreated = "Token has been generated successfully.";
-        public const string InValidUserId = "User ID cannot be zero.";
 
         // Client message
         public const string ClientAdded = "Client has been added successfully.";
-        public const string ClientsFound = "Clients Found.";
-        public const string NoClientsFound = "No Client Found.";
-
-        // Search suggesstion messages
-        public const string SuggesstionsFound = "Search suggesstions found.";
-        public const string NoSuggesstionsFound = "No Search suggesstions Found.";
 
         // Error messages
         public const string InvalidInput = "The input provided is invalid.";
