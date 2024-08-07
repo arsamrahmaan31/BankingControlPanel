@@ -28,6 +28,7 @@ namespace Banking.Auth.Managers
                         }
                         var loggedInUser = new LoginResponse
                         {
+                            user_id = credentialsFound.user_id,
                             first_name = credentialsFound.first_name,
                             last_name = credentialsFound.last_name,
                             email = credentialsFound.email,
