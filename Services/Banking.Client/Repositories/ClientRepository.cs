@@ -174,6 +174,7 @@ namespace Banking.Client.Repositories
 
             // Add parameters for client details
             parameters.Add(DatabaseClientFields.Personal_Id, clientRequest.personal_id);
+            parameters.Add(DatabaseClientFields.AddedBy, clientRequest.added_by_id);
             parameters.Add(DatabaseClientFields.Gender_Id, clientRequest.gender_id);
             parameters.Add(DatabaseClientFields.Email_Add, clientRequest.email);
             parameters.Add(DatabaseClientFields.ProfilePhoto, filePath);

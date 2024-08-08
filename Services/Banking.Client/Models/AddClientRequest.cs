@@ -11,6 +11,8 @@ namespace Banking.Client.Models
         [Required]
         [Range(1, 2, ErrorMessage = "gender_id must be either 1 (Male) or 2 (Female).")]
         public int gender_id { get; set; }
+        [Required]
+        public int added_by_id { get; set; }
         [Required(ErrorMessage = "first_name is required.")]
         [StringLength(60, ErrorMessage = "first_name must be less than 60 characters.")]
         public string first_name { get; set; }

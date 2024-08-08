@@ -13,6 +13,8 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "banking-panel-local-db", "D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{5573B449-F37D-449B-918A-12A8CB9771E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Banking.APIGateway", "Services\Banking.APIGateway\Banking.APIGateway.csproj", "{25C70C9E-DDE9-440C-8851-2681FB178BF0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{1A3B8D44-BA7B-4722-ABCD-0D1DA4203742}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A3B8D44-BA7B-4722-ABCD-0D1DA4203742}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1A3B8D44-BA7B-4722-ABCD-0D1DA4203742}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{25C70C9E-DDE9-440C-8851-2681FB178BF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25C70C9E-DDE9-440C-8851-2681FB178BF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25C70C9E-DDE9-440C-8851-2681FB178BF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25C70C9E-DDE9-440C-8851-2681FB178BF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +47,7 @@ Global
 		{5F409881-3C0F-472B-A3A1-6D12DD077E69} = {62934ED9-FE46-4B0C-857D-21253B38858E}
 		{ECC66494-92E0-4882-A22B-699EF736F393} = {62934ED9-FE46-4B0C-857D-21253B38858E}
 		{1A3B8D44-BA7B-4722-ABCD-0D1DA4203742} = {5573B449-F37D-449B-918A-12A8CB9771E7}
+		{25C70C9E-DDE9-440C-8851-2681FB178BF0} = {62934ED9-FE46-4B0C-857D-21253B38858E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B6FC28C-2308-439F-94C6-AF36714EE4F5}

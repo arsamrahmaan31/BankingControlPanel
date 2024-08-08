@@ -30,6 +30,7 @@
         public const string Street_ = "@street";
         public const string Country_ = "@country";
         public const string Client_Id = "@client_id";
+        public const string AddedBy = "@added_by_id";
 
         // Filters for get clients
         public const string Filter = "@Filter";
