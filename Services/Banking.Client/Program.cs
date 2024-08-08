@@ -1,4 +1,5 @@
 using Banking.Client.ClientLogger;
+using Banking.Client.Constants;
 using Banking.Client.HelperHandlers;
 using Banking.Client.Managers;
 using Banking.Client.Repositories;
@@ -44,7 +45,7 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
         ValidateAudience = false,
         ValidateIssuer = false,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-            builder.Configuration.GetSection("AppSettings:Token").Value!))
+            builder.Configuration.GetSection(SystemConstants.JwtTokenPath).Value!))
     };
 });
 

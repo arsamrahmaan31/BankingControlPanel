@@ -12,36 +12,37 @@ namespace Banking.Client.Managers
         {
             try
             {
+                // Check if the user trying to add a client is a valid admin
                 bool isValid = await clientRepository.CheckIfValidAdmin(client.added_by_id);
                 if (!isValid)
                 {
                     return new ResponseResult<AddClientResponse> { success = false, status_code = (int)HttpStatusCode.Forbidden, result = null, message = StaticMessages.NotValidAdmin };
                 }
                 string filePath = null;
-                
-                // Check if a profile picture has been uploaded
+
+                // Check if a profile picture is included in the request
                 if (client.profile_picture != null && client.profile_picture.Length > 0)
                 {
-                    // Define a path where the images will be stored
+                    // Define the directory path where uploaded pictures will be stored
                     var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedPictures");
 
-                    // Ensure the directory exists
+                    // Ensure the directory exists; create it if it does not
                     if (!Directory.Exists(uploadsFolderPath))
                     {
                         Directory.CreateDirectory(uploadsFolderPath);
                     }
 
-                    // Generate a unique name for the image file using a new GUID and the original file name
+                    // Generate a unique file name using GUID and the original file extension
                     string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(client.profile_picture.FileName);
                     filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
 
-                    // Save the image to the local file system
+                    // Save the profile picture to the specified path
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await client.profile_picture.CopyToAsync(stream);
                     }
 
-                    // Store the relative path of the uploaded profile picture
+                    // Set the relative path of the uploaded profile picture for storage in the database
                     filePath = $"/UploadedPictures/{uniqueFileName}";
                 }
 

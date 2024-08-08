@@ -22,7 +22,7 @@ namespace Banking.Auth.Repositories
                 // Passing email as a dynamic parameter for the stored procedure
                 var parameters = new { email };
 
-                // Execute the stored procedure
+                // Execute the stored procedure to check if email exists
                 var user = await connection.QueryFirstOrDefaultAsync<UserVerificationResult>(
                     SystemConstants.StoredProcedure_CheckIfEmailExists, parameters, commandType: CommandType.StoredProcedure
                 );
@@ -54,7 +54,7 @@ namespace Banking.Auth.Repositories
                 // Parameters for the stored procedure
                 var parameters = new { user.role_id, user.first_name, user.last_name, user.email, user.password };
 
-                // Execute the stored procedure
+                // Execute the stored procedure to insert new user
                 var userRes = await connection.QueryFirstOrDefaultAsync<SignUpResponse>(
                     SystemConstants.StoredProcedure_UserSignUp, parameters, commandType: CommandType.StoredProcedure
                 );

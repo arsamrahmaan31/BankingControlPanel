@@ -13,7 +13,7 @@ namespace Banking.Auth.Controllers
     public class AuthController(IAuthManager authManager, IAuthLogger authLogger, IHttpContextAccessor httpContextAccessor) : Controller
     {
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest login)
+        public async Task<IActionResult> Signin([FromBody] LoginRequest login)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace Banking.Auth.Controllers
         }
 
         [HttpPost("SignUp")]
-        public async Task<IActionResult> SignUp(SignUpRequest user)
+        public async Task<IActionResult> CreateUser(SignUpRequest user)
         {
             try
             {
