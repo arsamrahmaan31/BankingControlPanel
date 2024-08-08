@@ -7,5 +7,7 @@ namespace Banking.Client.Repositories
         Task<ResponseResult<AddClientResponse>> CreateClientAsync(AddClientRequest client, string? filePath);
         Task<IEnumerable<Clients>> GetAllClientsAsync(int loggedIn_user_id, QueryParameters queryParameters);
         Task<IEnumerable<string>> GetSuggesstionsAsync(int loggedIn_user_id);
+        Task<bool> CheckIfValidAdmin(int added_by_id);
+
     }
 }

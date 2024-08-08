@@ -14,6 +14,7 @@
 
         // Client message
         public const string ClientAdded = "Client has been added successfully.";
+        public const string NotValidAdmin = "User is not a valid admin.";
         public const string ClientsFound = "Clients Found.";
         public const string NoClientsFound = "No Client Found.";
 

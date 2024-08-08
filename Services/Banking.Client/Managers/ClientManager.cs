@@ -12,8 +12,13 @@ namespace Banking.Client.Managers
         {
             try
             {
+                bool isValid = await clientRepository.CheckIfValidAdmin(client.added_by_id);
+                if (!isValid)
+                {
+                    return new ResponseResult<AddClientResponse> { success = false, status_code = (int)HttpStatusCode.Forbidden, result = null, message = StaticMessages.NotValidAdmin };
+                }
                 string filePath = null;
-
+                
                 // Check if a profile picture has been uploaded
                 if (client.profile_picture != null && client.profile_picture.Length > 0)
                 {

@@ -12,6 +12,7 @@
         public const string StoreProcedure_GetAllClients = "sp_getAllClients";
         public const string StoreProcedure_GetLast3SearchSuggestions = "sp_getLast3SearchSuggestions";
         public const string StoredProcedure_LogSearchFilters = "sp_logSearchFilter";
+        public const string StoredProcedure_CheckIfValidAdmin = "sp_checkIfValidAdmin";
 
 
 
