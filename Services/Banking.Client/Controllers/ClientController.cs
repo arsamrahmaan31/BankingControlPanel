@@ -11,8 +11,20 @@ namespace Banking.Client.Controllers
     [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class ClientController(IClientManager clientManager, IClientLogger clientLogger, IHttpContextAccessor httpContextAccessor) : Controller
+    public class ClientController : Controller
     {
+        private readonly IClientManager _clientManager;
+        private readonly IClientLogger _clientLogger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        // Constructor
+        public ClientController(IClientManager clientManager,IClientLogger clientLogger,IHttpContextAccessor httpContextAccessor)
+        {
+            _clientManager = clientManager;
+            _clientLogger = clientLogger;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
         [HttpPost("AddNewClient")]
         public async Task<IActionResult> AddClient([FromForm] AddClientRequest client)
         {
@@ -25,17 +37,17 @@ namespace Banking.Client.Controllers
                 }
 
                 // Log the request details
-                var httpContext = httpContextAccessor.HttpContext;
+                var httpContext = _httpContextAccessor.HttpContext;
                 if (httpContext != null)
                 {
-                    clientLogger.LogRequest(client, httpContext);
+                    _clientLogger.LogRequest(client, httpContext);
                 }
 
                 // Attempt to add client
-                var result = await clientManager.AddClientAsync(client);
+                var result = await _clientManager.AddClientAsync(client);
 
                 // Log the respones and return result
-                clientLogger.LogResponse(result);
+                _clientLogger.LogResponse(result);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -59,11 +71,18 @@ namespace Banking.Client.Controllers
                     return BadRequest(StaticMessages.InValidUserId);
                 }
 
+                // Log the request details
+                var httpContext = _httpContextAccessor.HttpContext;
+                if (httpContext != null)
+                {
+                    _clientLogger.LogRequest(queryParameters, httpContext);
+                }
+
                 // Attempt to add client
-                var result = await clientManager.GetClientsAsync(loggedIn_user_id, queryParameters);
+                var result = await _clientManager.GetClientsAsync(loggedIn_user_id, queryParameters);
 
                 // Log the respones and return result
-                clientLogger.LogResponse(result);
+                _clientLogger.LogResponse(result);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -86,11 +105,19 @@ namespace Banking.Client.Controllers
                 {
                     return BadRequest(StaticMessages.InValidUserId);
                 }
+
+                // Log the request details
+                var httpContext = _httpContextAccessor.HttpContext;
+                if (httpContext != null)
+                {
+                    _clientLogger.LogRequest(loggedIn_user_id, httpContext);
+                }
+
                 // Attempt to get suggesstions
-                var result = await clientManager.GetLatestSearchAsync(loggedIn_user_id);
+                var result = await _clientManager.GetLatestSearchAsync(loggedIn_user_id);
 
                 // Log the respones and return result
-                clientLogger.LogResponse(result);
+                _clientLogger.LogResponse(result);
                 return Ok(result);
             }
             catch (Exception ex)

@@ -1,4 +1,3 @@
-
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
@@ -17,19 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddOcelot();
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-app.UseSwagger(c =>
-{
-    c.SerializeAsV2 = true;
-});
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Gateway");
-    c.RoutePrefix = string.Empty;
-});
-//}
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

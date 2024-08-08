@@ -9,8 +9,14 @@ using System.Net;
 
 namespace Banking.Auth.Repositories
 {
-    public class AuthRepository(IConfiguration configuration): IAuthRepository
+    public class AuthRepository: IAuthRepository
     {
+        private readonly IConfiguration _configuration;
+
+        public AuthRepository(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         public async Task<UserVerificationResult> IsLoginExistsAsync(string email)
         {
@@ -94,7 +100,7 @@ namespace Banking.Auth.Repositories
 
         private SqlConnection CreateConnection()
         {
-            var connectionString = configuration.GetConnectionString(SystemConstants.DefaultConnection);
+            var connectionString = _configuration.GetConnectionString(SystemConstants.DefaultConnection);
             if (string.IsNullOrEmpty(connectionString))
             {
                 throw new InvalidOperationException(StaticMessages.DatabaseNotConfigured);

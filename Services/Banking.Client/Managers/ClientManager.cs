@@ -6,14 +6,21 @@ using System.Net;
 
 namespace Banking.Client.Managers
 {
-    public class ClientManager(IClientRepository clientRepository) : IClientManager
+    public class ClientManager : IClientManager
     {
+        private readonly IClientRepository _clientRepository;
+
+        // Constructor
+        public ClientManager(IClientRepository clientRepository)
+        {
+            _clientRepository = clientRepository;
+        }
         public async Task<ResponseResult<AddClientResponse>> AddClientAsync(AddClientRequest client)
         {
             try
             {
                 // Check if the user trying to add a client is a valid admin
-                bool isValid = await clientRepository.CheckIfValidAdmin(client.added_by_id);
+                bool isValid = await _clientRepository.CheckIfValidAdmin(client.added_by_id);
                 if (!isValid)
                 {
                     return new ResponseResult<AddClientResponse> { success = false, status_code = (int)HttpStatusCode.Forbidden, result = null, message = StaticMessages.NotValidAdmin };
@@ -47,7 +54,7 @@ namespace Banking.Client.Managers
                 }
 
                 // Add client in the database
-                ResponseResult<AddClientResponse> createUserResult = await clientRepository.CreateClientAsync(client, filePath);
+                ResponseResult<AddClientResponse> createUserResult = await _clientRepository.CreateClientAsync(client, filePath);
 
                 // If insertion is successful, return a success response with a 200 OK status
                 if (createUserResult.success)
@@ -77,7 +84,7 @@ namespace Banking.Client.Managers
             try
             {
                 // Retrieve data using the repository method
-                var clients = await clientRepository.GetAllClientsAsync(loggedIn_user_id, queryParameters);
+                var clients = await _clientRepository.GetAllClientsAsync(loggedIn_user_id, queryParameters);
 
                 // Convert the IEnumerable<Clients> to a List<Clients>
                 var clientList = clients.ToList();
@@ -106,7 +113,7 @@ namespace Banking.Client.Managers
             try
             {
                 // Retrieve latest suggesstions from database
-                var searchFilters = await clientRepository.GetSuggesstionsAsync(loggedIn_user_id);
+                var searchFilters = await _clientRepository.GetSuggesstionsAsync(loggedIn_user_id);
 
                 // Convert the IEnumerable<string> to a List<string>
                 var searchFilterList = searchFilters.ToList();

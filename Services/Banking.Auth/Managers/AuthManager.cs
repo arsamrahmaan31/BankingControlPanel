@@ -10,14 +10,22 @@ using System.Text;
 
 namespace Banking.Auth.Managers
 {
-    public class AuthManager(IAuthRepository authRepository, IConfiguration configuration) : IAuthManager
+    public class AuthManager : IAuthManager
     {
+        private readonly IAuthRepository _authRepository;
+        private readonly IConfiguration _configuration;
+
+        public AuthManager(IAuthRepository authRepository, IConfiguration configuration)
+        {
+            _authRepository = authRepository;
+            _configuration = configuration;
+        }
         public async Task<ResponseResult<LoginResponse>> LoginAsync(LoginRequest login)
         {
             try
             {
                 // Check if the user credentials exist in the system
-                var credentialsFound = await authRepository.IsLoginExistsAsync(login.email);
+                var credentialsFound = await _authRepository.IsLoginExistsAsync(login.email);
                 if (credentialsFound != null)
                 {
                     // Verify the provided password against the stored hash
@@ -76,7 +84,7 @@ namespace Banking.Auth.Managers
             try
             {
                 // Check if the user email already exists in the system
-                var credentialsFound = await authRepository.IsLoginExistsAsync(user.email);
+                var credentialsFound = await _authRepository.IsLoginExistsAsync(user.email);
                 if (credentialsFound != null)
                 {
                     // Return conflict response if the email already exists
@@ -91,7 +99,7 @@ namespace Banking.Auth.Managers
                 user.password = passwordHash;
 
                 // Attempt to create the user in the database
-                ResponseResult<SignUpResponse> createUserResult = await authRepository.SignUpAsync(user);
+                ResponseResult<SignUpResponse> createUserResult = await _authRepository.SignUpAsync(user);
 
                 if (createUserResult.success)
                 {
@@ -131,7 +139,7 @@ namespace Banking.Auth.Managers
             }
 
             // Create a symmetric security key using the secret from configuration
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection(SystemConstants.JwtTokenPath).Value!));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection(SystemConstants.JwtTokenPath).Value!));
 
             // Define the signing credentials using the HMAC SHA-512 algorithm
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

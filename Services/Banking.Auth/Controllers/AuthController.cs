@@ -10,8 +10,19 @@ namespace Banking.Auth.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IAuthManager authManager, IAuthLogger authLogger, IHttpContextAccessor httpContextAccessor) : Controller
+    public class AuthController : Controller
     {
+        private readonly IAuthManager _authManager;
+        private readonly IAuthLogger _authLogger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public AuthController(IAuthManager authManager, IAuthLogger authLogger, IHttpContextAccessor httpContextAccessor)
+        {
+            _authManager = authManager;
+            _authLogger = authLogger;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
         [HttpPost("Login")]
         public async Task<IActionResult> Signin([FromBody] LoginRequest login)
         {
@@ -24,30 +35,30 @@ namespace Banking.Auth.Controllers
                 }
 
                 // Log the request details
-                var httpContext = httpContextAccessor.HttpContext;
+                var httpContext = _httpContextAccessor.HttpContext;
                 if (httpContext != null)
                 {
-                    authLogger.LogRequest(login, httpContext);
+                    _authLogger.LogRequest(login, httpContext);
                 }
 
                 // Attempt to log in
-                var result = await authManager.LoginAsync(login);
+                var result = await _authManager.LoginAsync(login);
 
                 // Handle failed login attempt
                 if (!result.success)
                 {
-                    authLogger.LogResponse(result);
+                    _authLogger.LogResponse(result);
                     return Unauthorized(result);
                 }
 
                 // Log successful response and return result
-                authLogger.LogResponse(result);
+                _authLogger.LogResponse(result);
                 return Ok(result);
             }
             catch (Exception ex)
             {
                 // Log the exception details
-                Log.Error(StaticMessages.ExceptionOccured, nameof(Login), ex.Message);
+                Log.Error(StaticMessages.ExceptionOccured, nameof(Signin), ex.Message);
 
                 // The exception will be handled by the global exception handler middleware
                 throw;
@@ -66,23 +77,23 @@ namespace Banking.Auth.Controllers
                 }
 
                 // Log the request details
-                var httpContext = httpContextAccessor.HttpContext;
+                var httpContext = _httpContextAccessor.HttpContext;
                 if (httpContext != null)
                 {
-                    authLogger.LogRequest(user, httpContext);
+                    _authLogger.LogRequest(user, httpContext);
                 }
 
                 // Attempt to sign up
-                var result = await authManager.SignUpAsync(user);
+                var result = await _authManager.SignUpAsync(user);
 
                 // Log the respones and return result
-                authLogger.LogResponse(result);
+                _authLogger.LogResponse(result);
                 return Ok(result);
             }
             catch (Exception ex)
             {
                 // Log the exception details
-                Log.Error(StaticMessages.ExceptionOccured, nameof(SignUp), ex.Message);
+                Log.Error(StaticMessages.ExceptionOccured, nameof(CreateUser), ex.Message);
 
                 // The exception will be handled by the global exception middleware
                 throw;
