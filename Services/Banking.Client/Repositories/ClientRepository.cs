@@ -9,8 +9,16 @@ using System.Net;
 
 namespace Banking.Client.Repositories
 {
-    public class ClientRepository(IConfiguration configuration) : IClientRepository
+    public class ClientRepository : IClientRepository
     {
+        private readonly IConfiguration _configuration;
+
+        // Constructor
+        public ClientRepository(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         #region Public methods
         public async Task<ResponseResult<AddClientResponse>> CreateClientAsync(AddClientRequest client, string? filePath)
         {
@@ -72,10 +80,13 @@ namespace Banking.Client.Repositories
                 // Passing added_by_id as a dynamic parameter for the stored procedure
                 var parameters = new { added_by_id };
 
-                // Execute the stored procedure
-                bool isValid = await connection.QueryFirstOrDefaultAsync<bool>(
+                // Execute the stored procedure and get the result
+                var result = await connection.QueryFirstOrDefaultAsync<int>(
                     SystemConstants.StoredProcedure_CheckIfValidAdmin, parameters, commandType: CommandType.StoredProcedure
                 );
+
+                // Convert the result to boolean
+                bool isValid = result == 1;
 
                 // Return the result
                 return isValid;
@@ -93,6 +104,7 @@ namespace Banking.Client.Repositories
                 throw;
             }
         }
+
 
 
         public async Task<IEnumerable<Clients>> GetAllClientsAsync(int loggedIn_user_id, QueryParameters queryParameters)
@@ -183,7 +195,7 @@ namespace Banking.Client.Repositories
 
         private SqlConnection CreateConnection()
         {
-            var connectionString = configuration.GetConnectionString(SystemConstants.DefaultConnection);
+            var connectionString = _configuration.GetConnectionString(SystemConstants.DefaultConnection);
             if (string.IsNullOrEmpty(connectionString))
             {
                 throw new InvalidOperationException(StaticMessages.DatabaseNotConfigured);
