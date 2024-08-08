@@ -2,6 +2,7 @@
 -- Alter the stored procedure to add a new client
 CREATE PROCEDURE [dbo].[sp_addNewClient]
     @personal_id CHAR(11),                -- Personal identification number of the client
+	@added_by_id INT,                     -- Explains which admin added the client
     @gender_id INT,                      -- Gender ID of the client
     @profile_photo NVARCHAR(MAX),        -- Path or URL to the profile photo of the client
     @email NVARCHAR(50),                 -- Email address of the client
@@ -20,6 +21,7 @@ BEGIN
     -- Insert the new client record into the bp_clients table
     INSERT INTO bp_clients (
         personal_id,
+		added_by_id,
         gender_id,
         profile_photo,
         email,
@@ -33,6 +35,7 @@ BEGIN
     )
     VALUES (
         @personal_id,
+		@added_by_id,
         @gender_id,
         @profile_photo,
         @email,

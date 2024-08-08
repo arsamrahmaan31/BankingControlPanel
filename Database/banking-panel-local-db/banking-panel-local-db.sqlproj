@@ -76,5 +76,6 @@
     <Build Include="dbo\Stored Procedures\sp_logSearchFilter.sql" />
     <Build Include="dbo\Stored Procedures\sp_getLast3SearchSuggestions.sql" />
     <Build Include="dbo\Stored Procedures\sp_getAllClients.sql" />
+    <Build Include="dbo\Stored Procedures\sp_checkIfValidAdmin.sql" />
   </ItemGroup>
 </Project>
